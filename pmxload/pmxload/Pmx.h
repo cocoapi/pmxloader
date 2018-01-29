@@ -2,6 +2,7 @@
 #include <string>
 
 namespace fVector {
+	//2-float vector
 	class vec2 {
 	protected:
 		float x;
@@ -9,6 +10,7 @@ namespace fVector {
 
 	public:
 		vec2() : x(0.0f), y(0.0f) {};
+		vec2(const float& newX, const float& newY) : x(newX), y(newY) {};
 		vec2& operator+(vec2& oper) {
 			vec2* result = new vec2;
 			result->set(x + oper.x, y + oper.y);
@@ -30,17 +32,20 @@ namespace fVector {
 			x = newX;
 			y = newY;
 		}
+		void setX(const float& newX) { x = newX; };
+		void setY(const float& newY) { y = newY; };
 		float getX() { return x; };
 		float getY() { return y; };
 	};
 
+	//3-float vector
 	class vec3 : public vec2 {
 	protected:
 		float z;
 
 	public:
 		vec3() : vec2(), z(0.0f) {};
-
+		vec3(const float& newX, const float& newY, const float& newZ) : vec2(newX, newY), z(newZ) {}
 		vec3& operator+(vec2& oper) {
 			vec3* result = new vec3;
 			result->set(x + oper.getX(), y + oper.getY(), z);
@@ -80,15 +85,18 @@ namespace fVector {
 			y = newY;
 			z = newZ;
 		}
+		void setZ(const float& newZ) { z = newZ; }
 		float getZ() { return z; };
 	};
 
+	//4-float vector
 	class vec4 : public vec3 {
 	private:
 		float w;
 		
 	public:
 		vec4() : vec3(), w(0.0f) {};
+		vec4(const float& newX, const float& newY, const float& newZ, const float& newW) : vec3(newX, newY, newZ), w(newW) {};
 		vec4& operator+(vec4& oper) {
 			vec4* result = new vec4;
 			result->set(x + oper.x, y + oper.y, z + oper.z, w - oper.w);
@@ -125,7 +133,7 @@ namespace fVector {
 			z = newZ;
 			w = newW;
 		}
-
+		void setW(const float& newW) { w = newW; }
 		float getW() { return w; };
 	};
 }
@@ -215,6 +223,20 @@ namespace pmx {
 		fVector::vec3 R0;
 		fVector::vec3 R1;
 	public:
+		PMX_SDEFORM() : PMX_DEFORM2(),
+			C(),
+			R0(),
+			R1()
+		{};
+		PMX_SDEFORM(const char& type) : PMX_DEFORM2(type),
+			C(),
+			R0(),
+			R1()
+		{};
+
+		void setC(const fVector::vec3& newC) { C = newC; };
+		void setR0(const fVector::vec3& newR) { R0 = newR; };
+		void setR1(const fVector::vec3& newR) { R1 = newR; };
 	};
 
 	class PMX_VERTEX {
@@ -222,10 +244,24 @@ namespace pmx {
 		fVector::vec3 postion;
 		float textureU;
 		float textureV;
-		float *Appendix;
+		fVector::vec4 *Appendix;
 		PMX_DEFORM* Defrom;
+		float Edge;
 	public:
-
+		PMX_VERTEX() :
+			postion(),
+			textureU(0.0f),
+			textureV(0.0f),
+			Edge(0.0f)
+		{
+			Appendix = NULL;
+			Defrom = NULL;
+		};
+		PMX_VERTEX(const char&, const char&, const char& type);
+		~PMX_VERTEX() {
+			if (Appendix) delete Appendix;
+			if (Defrom) delete Defrom;
+		}
 	};
 
 	class PMX_MODEL {
@@ -245,7 +281,7 @@ namespace pmx {
 		std::wstring englishName;
 		std::wstring englishComment;
 		int vertexCount;
-		PMX_VERTEX vertex;
+		PMX_VERTEX* vertex;
 	public :
 		PMX_MODEL() :
 			version(0.0f),

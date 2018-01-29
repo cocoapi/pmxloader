@@ -53,6 +53,31 @@ pmx::PMX_DEFORM4::PMX_DEFORM4(const char& type) : PMX_DEFORM2(type) {
 	}
 }
 
+pmx::PMX_VERTEX::PMX_VERTEX(const char& app, const char& defo, const char& type) :
+	postion(),
+	textureU(0.0f),
+	textureV(0.0f),
+	Edge(0.0f) 
+{
+	Appendix = new fVector::vec4[app];
+	switch (defo) {
+	case 0:
+		Defrom = new pmx::PMX_DEFORM(type);
+		break;
+	case 1:
+		Defrom = new pmx::PMX_DEFORM2(type);
+		break;
+	case 2:
+		Defrom = new pmx::PMX_DEFORM4(type);
+		break;
+	case 4:
+		Defrom = new pmx::PMX_SDEFORM(type);
+		break;
+	default:
+		Defrom = NULL;
+	}
+}
+
 //load model and data from file
 bool pmx::PMX_MODEL::readModel(const char* path) {
 	std::ifstream model(path, std::ifstream::binary);
