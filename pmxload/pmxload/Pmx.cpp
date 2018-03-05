@@ -132,11 +132,38 @@ bool pmx::PMX_MODEL::readModel(const char* path) {
 			}
 			model.read(buffer, 4);
 			this->vertexCount = (int&)buffer;
+			this->vertex = new PMX_VERTEX[vertexCount];
 			for (int i = 0; i < vertexCount; i++) {
+				char posBuf[12];
+				model.read(posBuf, 12);
+				fVector::vec3 pos((float&) posBuf, (float&)posBuf + 4, (float&)posBuf + 8);
+				vertex[i].setPostion(pos);
+				model.read(posBuf, 8);
+				vertex[i].setUV((float&)posBuf, (float&)posBuf + 4);
+				for (int i = 0; i < this->appendixUV; i++) {
+					model.read(buffer, 4);
+				}
+				model.read(buffer, 1);
 
 			}
 			return true;
 		}
 		return false;
+	}
+}
+
+void pmx::PMX_VERTEX::setDefrom(const char& value, const char& type) {
+	switch (value) {
+	case 0:
+		this->Defrom = new PMX_DEFORM(type);
+	case 1:
+		this->Defrom = new PMX_DEFORM2(type);
+	case 2:
+		this->Defrom = new PMX_DEFORM4(type);
+	case 4:
+		this->Defrom = new PMX_SDEFORM(type);
+	default:
+		this->Defrom = NULL;
+		break;
 	}
 }

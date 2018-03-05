@@ -262,6 +262,20 @@ namespace pmx {
 			if (Appendix) delete Appendix;
 			if (Defrom) delete Defrom;
 		}
+		void setPostion(const fVector::vec3& pos) {
+			this->postion = pos;
+		}
+		void setPostion(const float& x, const float& y, const float& z) {
+			this->postion.set(x, y, z);
+		}
+		void setDefrom(const char&, const char&);
+		void setUV(const float& U, const float& V) {
+			textureU = U;
+			textureV = V;
+		}
+		void setEdge(const float& nEdge) {
+			Edge = nEdge;
+		}
 	};
 
 	class PMX_MODEL {
