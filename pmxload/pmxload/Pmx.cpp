@@ -1,6 +1,8 @@
 #include <fstream>
 #include "Pmx.h"
 
+#define INDEX(x) x == 1 ? (char)x : x == 2 ? (short)x : (int)x
+
 pmx::PMX_DEFORM::PMX_DEFORM(const char& type) : weight1(1.0f) {
 	switch (type) {
 	case 1:
@@ -145,8 +147,71 @@ bool pmx::PMX_MODEL::readModel(const char* path) {
 				}
 				model.read(buffer, 1);
 				vertex[i].setDefrom(*buffer, this->boneIndexSize);
+				PMX_DEFORM *vDeform = vertex[i].getDeform();
+				switch (*buffer) {
+				case 0:
+					model.read(buffer, this->boneIndexSize);
+					vDeform->setI1value(INDEX(*buffer));
+					break;
+				case 1:
+					model.read(buffer, this->boneIndexSize);
+					vDeform->setI1value(INDEX(*buffer));
+					model.read(buffer, this->boneIndexSize);
+					vDeform->setI2value(INDEX(*buffer));
+					model.read(buffer, 4);
+					vDeform->setWeight1((float&)buffer);
+					break;
+				case 2:
+					model.read(buffer, this->boneIndexSize);
+					vDeform->setI1value(INDEX(*buffer));
+					model.read(buffer, this->boneIndexSize);
+					vDeform->setI2value(INDEX(*buffer));
+					model.read(buffer, this->boneIndexSize);
+					vDeform->setI3value(INDEX(*buffer));
+					model.read(buffer, this->boneIndexSize);
+					vDeform->setI4value(INDEX(*buffer));
+					model.read(buffer, 4);
+					vDeform->setWeight1((float&)buffer);
+					model.read(buffer, 4);
+					vDeform->setWeight2((float&)buffer);
+					model.read(buffer, 4);
+					vDeform->setWeight3((float&)buffer);
+					model.read(buffer, 4);
+					vDeform->setWeight4((float&)buffer);
+					break;
+				case 4:
+					model.read(buffer, this->boneIndexSize);
+					vDeform->setI1value(INDEX(*buffer));
+					model.read(buffer, this->boneIndexSize);
+					vDeform->setI2value(INDEX(*buffer));
+					model.read(buffer, 4);
+					vDeform->setWeight1((float&)buffer);
+					model.read(buffer, 4);
+					pos.setX((float&)buffer);
+					model.read(buffer, 4);
+					pos.setY((float&)buffer);
+					model.read(buffer, 4);
+					pos.setZ((float&)buffer);
+					vDeform->setC(pos);
+					model.read(buffer, 4);
+					pos.setX((float&)buffer);
+					model.read(buffer, 4);
+					pos.setY((float&)buffer);
+					model.read(buffer, 4);
+					pos.setZ((float&)buffer);
+					vDeform->setR0(pos);
+					model.read(buffer, 4);
+					pos.setX((float&)buffer);
+					model.read(buffer, 4);
+					pos.setY((float&)buffer);
+					model.read(buffer, 4);
+					pos.setZ((float&)buffer);
+					vDeform->setR1(pos);
+					break;
+				default:
+					break;
+				}
 				model.read(buffer, this->boneIndexSize);
-				
 				model.read(buffer, 4);
 				vertex[i].setEdge((float&)buffer);
 			}

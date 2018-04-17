@@ -156,6 +156,25 @@ namespace pmx {
 		void setI1value(const char& nVal) { index1 = (void*)nVal; }
 		void setI1value(const short& nVal) { index1 = (void*)nVal; }
 		void setI1value(const int& nVal) { index1 = (void*)nVal; }
+
+
+		virtual void setI2value(const char& nVal) {};
+		virtual void setI2value(const short& nVal) {};
+		virtual void setI2value(const int& nVal) {};
+		virtual void setWeight1(const float& newWeight) {};
+		virtual void setWeight2(const float& newWeight) {};
+		virtual void setWeight3(const float& newWeight) {};
+		virtual void setWeight4(const float& newWeight) {};
+		virtual void setI3value(const char& nVal) {};
+		virtual void setI3value(const short& nVal) {};
+		virtual void setI3value(const int& nVal) {};
+		virtual void setI4value(const char& nVal) {};
+		virtual void setI4value(const short& nVal) {};
+		virtual void setI4value(const int& nVal) {};
+		virtual void setWeights(const float& newWeight1, const float& newWeight2, const float& newWeight3, const float& newWeight4) {};
+		virtual void setC(const fVector::vec3& newC) {};
+		virtual void setR0(const fVector::vec3& newR) {};
+		virtual void setR1(const fVector::vec3& newR) {};
 	};
 
 	class PMX_DEFORM2 : public PMX_DEFORM {
@@ -173,7 +192,7 @@ namespace pmx {
 			if (index2) delete index2;
 		}
 
-		virtual void setWeight1(const float& newWeight) {
+		void setWeight1(const float& newWeight) {
 			weight1 = newWeight;
 			weight2 = 1.0f - newWeight;
 		}
@@ -247,6 +266,7 @@ namespace pmx {
 		fVector::vec4 *Appendix;
 		PMX_DEFORM* Defrom;
 		float Edge;
+		
 	public:
 		PMX_VERTEX() :
 			postion(),
@@ -275,6 +295,9 @@ namespace pmx {
 		}
 		void setEdge(const float& nEdge) {
 			Edge = nEdge;
+		}
+		PMX_DEFORM* getDeform() {
+			return Defrom;
 		}
 	};
 
@@ -388,10 +411,10 @@ Each Material:          |       |           |
 - Specularity           | 4     | float     |
 - Ambient Color (RGB)   | 4 * 3 | float     |
 - Drawing Mode Flag     | 1     | char      | 0x01 = Double-Sided
-|           | 0x02 = Shadow
-|           | 0x04 = Self shadow map
-|           | 0x08 = Self shadow
-|           | 0x10 = Draw edges
+								|           | 0x02 = Shadow
+								|           | 0x04 = Self shadow map
+								|           | 0x08 = Self shadow
+								|           | 0x10 = Draw edges
 - Edge Color (RGB)      | 4 * 3 | float     |
 - Edge Size             | 4     | float     |
 - Texture Index         | x     | x         | Type specified in the Texture Index Size header field.
