@@ -144,7 +144,11 @@ bool pmx::PMX_MODEL::readModel(const char* path) {
 					model.read(buffer, 4);
 				}
 				model.read(buffer, 1);
-
+				vertex[i].setDefrom(*buffer, this->boneIndexSize);
+				model.read(buffer, this->boneIndexSize);
+				
+				model.read(buffer, 4);
+				vertex[i].setEdge((float&)buffer);
 			}
 			return true;
 		}
