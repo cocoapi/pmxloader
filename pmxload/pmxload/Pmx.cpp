@@ -53,6 +53,31 @@ pmx::PMX_DEFORM4::PMX_DEFORM4(const char& type) : PMX_DEFORM2(type) {
 	}
 }
 
+pmx::PMX_VERTEX::PMX_VERTEX(const char& app, const char& defo, const char& type) :
+	postion(),
+	textureU(0.0f),
+	textureV(0.0f),
+	Edge(0.0f) 
+{
+	Appendix = new fVector::vec4[app];
+	switch (defo) {
+	case 0:
+		Defrom = new pmx::PMX_DEFORM(type);
+		break;
+	case 1:
+		Defrom = new pmx::PMX_DEFORM2(type);
+		break;
+	case 2:
+		Defrom = new pmx::PMX_DEFORM4(type);
+		break;
+	case 4:
+		Defrom = new pmx::PMX_SDEFORM(type);
+		break;
+	default:
+		Defrom = NULL;
+	}
+}
+
 //load model and data from file
 bool pmx::PMX_MODEL::readModel(const char* path) {
 	std::ifstream model(path, std::ifstream::binary);
@@ -107,11 +132,42 @@ bool pmx::PMX_MODEL::readModel(const char* path) {
 			}
 			model.read(buffer, 4);
 			this->vertexCount = (int&)buffer;
+			this->vertex = new PMX_VERTEX[vertexCount];
 			for (int i = 0; i < vertexCount; i++) {
-
+				char posBuf[12];
+				model.read(posBuf, 12);
+				fVector::vec3 pos((float&) posBuf, (float&)posBuf + 4, (float&)posBuf + 8);
+				vertex[i].setPostion(pos);
+				model.read(posBuf, 8);
+				vertex[i].setUV((float&)posBuf, (float&)posBuf + 4);
+				for (int i = 0; i < this->appendixUV; i++) {
+					model.read(buffer, 4);
+				}
+				model.read(buffer, 1);
+				vertex[i].setDefrom(*buffer, this->boneIndexSize);
+				model.read(buffer, this->boneIndexSize);
+				
+				model.read(buffer, 4);
+				vertex[i].setEdge((float&)buffer);
 			}
 			return true;
 		}
 		return false;
+	}
+}
+
+void pmx::PMX_VERTEX::setDefrom(const char& value, const char& type) {
+	switch (value) {
+	case 0:
+		this->Defrom = new PMX_DEFORM(type);
+	case 1:
+		this->Defrom = new PMX_DEFORM2(type);
+	case 2:
+		this->Defrom = new PMX_DEFORM4(type);
+	case 4:
+		this->Defrom = new PMX_SDEFORM(type);
+	default:
+		this->Defrom = NULL;
+		break;
 	}
 }
